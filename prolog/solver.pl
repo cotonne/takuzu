@@ -132,105 +132,85 @@ solveTakuzu(M, R) :-
 	matrixIsValid(R).
 
 /* TESTS */
-testAllElementsFrom0To0 :-
+:- begin_tests(takuzu).
+test(should_take_the_first_element) :-
 	allElementsFrom(0, 0, [0, 1, 2], X),
-	assertEquals('Should take the first element', [0], X).
+        X =:= [0], !.
 
-testAllElementsInTheMiddle :-
+test(should_take_the_first_element_in_the_middle) :-
         allElementsFrom(1, 3, [0, 1, 2, 3, 4, 5], X),
-        assertEquals('Should take the first element', [1, 2, 3], X).
+        X =@= [1, 2, 3], !.
 
-testAllElementsInTheEnd :-
+test(should_take_the_first_element_in_the_end) :-
         allElementsFrom(4, 5, [0, 1, 2, 3, 4, 5], X),
-        assertEquals('Should take the first element', [4, 5], X).
+        X =@= [4, 5], !.
 
-testReplaceWith :-
+test(should_replace_the_center_with_0) :-
 	replaceWith(0, 1, 1, [[0, 1, 2], [3, 4, 5], [6, 7, 8]], X),
-	assertEquals('Should replace the center with 0', [[0, 1, 2], [3, 0, 5], [6, 7, 8]], X).
+        X =@= [[0, 1, 2], [3, 0, 5], [6, 7, 8]], !.
 
-testNoSolutionForTakuzu :-
-	not(solveTakuzu([['1', '0'], ['1', '0']], _)).
+test(should_not_find_solution_for_takuzu, [fail]) :-
+	solveTakuzu([['1', '0'], ['1', '0']], _).
 
-testSimpleSolutionForTakuzu :-
+test(should_find_a_simple_solution_for_takuzu) :-
 	solveTakuzu([['.', '1'], ['1', '0']], R),
-	assertEquals("should find a simple anwser for takuzu", [['0', '1'], ['1', '0']], R).
+	R =@= [['0', '1'], ['1', '0']], !.
 	
-testAnotherSimpleSolutionForTakuzu :-
+test(should_find_another_simple_solution_for_takuzu) :-
         solveTakuzu([['.', '0'], ['0', '1']], R),
-        assertEquals("should find a simple anwser for takuzu", [['1', '0'], ['0', '1']], R).
+        R =@= [['1', '0'], ['0', '1']], !.
 
 
-testMatrixIsNotValidBecauseOfUnfairNumberOf1 :-
-	not(matrixIsValid([['1', '1'], ['1', '.']])).
+test(should_not_validate_matrix_because_of_unfair_number_of_1, [fail]) :-
+	matrixIsValid([['1', '1'], ['1', '.']]).
 
-testMatrixIsValid :-
-	matrixIsValid([['1', '0'], ['0', '.']]).
+test(should_validate_this_matrix) :-
+	matrixIsValid([['1', '0'], ['0', '.']]), !.
 
-testFinal :- 
+test(should_get_the_good_terms_from_matrix) :- 
 	getElementAt(2, 1, [[0, 1, 2], [3, 4, 5], [6, 7, 8]], X),
-	assertEquals('should get the good terms from matrix', 5, X).
+        X =:= 5, !.
 
-testDoestNotContainDuplicateLines :- 
-	matrixDoesntContainDuplicateLines([[0, 1, 2], [3, 4, 5], [6, 7, 8]]).
+test(should_not_indicate_that_matrix_contains_duplicate_lines) :- 
+	matrixDoesntContainDuplicateLines([[0, 1, 2], [3, 4, 5], [6, 7, 8]]), !.
 
-testDoestNotContainDuplicateLinesIfThereIsJoker :-
-        matrixDoesntContainDuplicateLines([['0', '0', '1', '.'], ['0', '0', '1', '.']]).
+test(should_not_indicate_that_matrix_contains_duplicate_lines_when_there_is_joker) :-
+        matrixDoesntContainDuplicateLines([['0', '0', '1', '.'], ['0', '0', '1', '.']]), !.
 
 
-testContainsDuplicateLines :-
-        not(matrixDoesntContainDuplicateLines([[1, 0], [1, 0]])).
+test(should_indicate_that_matrix_contains_duplicate_lines, [fail]) :-
+        matrixDoesntContainDuplicateLines([[1, 0], [1, 0]]).
 
-testMatrixDoesntContainDuplicateLinesOrColumns :-
-	matrixDoesntContainDuplicateLinesOrColumns([[0, 1, 2], [3, 4, 5], [6, 7, 8]]).
+test(should_say_that_matrix_doesnt_contain_duplicate_lines_or_columns) :-
+	matrixDoesntContainDuplicateLinesOrColumns([[0, 1, 2], [3, 4, 5], [6, 7, 8]]), !.
 
-testMatrixContainsDuplicateLinesOrColumns :-
-	not(matrixDoesntContainDuplicateLinesOrColumns([[1, 1, 0, 0], [1, 1, 0, 1], [1, 1, 1, 0], [1, 1, 1, 1]])).
+test(should_say_that_matrix_contains_duplicate_lines_or_columns, [fail]) :-
+	matrixDoesntContainDuplicateLinesOrColumns([[1, 1, 0, 0], [1, 1, 0, 1], [1, 1, 1, 0], [1, 1, 1, 1]]).
 
-testNbOf:-
+test(should_count_the_occurence_of_1) :-
 	nbOf('1', ['1', '0', '.', '1'], X),
-	assertEquals("should count correclty element 1 in list", 2, X).
+        X =:= 2, !.
 
-testRowIsValid:-
-	isRowAsFairNumberOf0And1(['1', '0', '0', '1']).
+test(should_say_that_row_has_a_fair_number_of_1_and_0):-
+	isRowAsFairNumberOf0And1(['1', '0', '0', '1']), !.
 
-testRowIsNotValid:-
-	not(isRowAsFairNumberOf0And1(['1', '1', '1', '0'])).
+test(should_say_that_row_has_not_a_fair_number_of_1_and_0, [fail]):-
+	isRowAsFairNumberOf0And1(['1', '1', '1', '0']).
 
-testRowIsValidWithDot:-
-	isRowAsFairNumberOf0And1(['1', '0', '.', '1']).
+test(should_say_that_row_has_a_fair_number_of_1_and_0_when_there_is_a_joker):-
+	isRowAsFairNumberOf0And1(['1', '0', '.', '1']), !.
 
-testRowIsNotValidWithDot:-
-        not(isRowAsFairNumberOf0And1(['1', '1', '1', '.'])).
+test(should_say_that_row_has_not_a_fair_number_of_1_and_0_with_a_joker, [fail]):-
+        isRowAsFairNumberOf0And1(['1', '1', '1', '.']).
 
 
-testGetColumn :- 
+test(should_return_the_good_column) :- 
 	getColumn(2, [[0, 1, 2], [3, 4, 5], [6, 7, 8]], C),
-	assertEquals("should get the second column", [2, 5, 8], C).
+	C =@= [2, 5, 8], !.
 	
-testTranspose :- 
+test(should_transpose_a_matrix) :- 
 	transpose([[0, 1, 2], [3, 4, 5], [6, 7, 8]], X),
-        assertEquals("should get the transposed matrix", [[0, 3, 6], [1, 4, 7], [2, 5, 8]], X).
+        X =@=[[0, 3, 6], [1, 4, 7], [2, 5, 8]], !.
 
-testAll :- 
-	testAllElementsFrom0To0,
-	testAllElementsInTheMiddle,
-	testAllElementsInTheEnd,
-	testReplaceWith,
-	testNoSolutionForTakuzu,
-	testSimpleSolutionForTakuzu,
-	testAnotherSimpleSolutionForTakuzu,
-	testMatrixIsNotValidBecauseOfUnfairNumberOf1,
-	testMatrixIsValid,
-	testFinal, 
-	testDoestNotContainDuplicateLines, 
-	testDoestNotContainDuplicateLinesIfThereIsJoker,
-	testContainsDuplicateLines,
-	testMatrixDoesntContainDuplicateLinesOrColumns,
-	testMatrixContainsDuplicateLinesOrColumns,
-	testNbOf,
-	testRowIsValid,
-	testRowIsNotValid,
-	testRowIsValidWithDot,
-	testRowIsNotValidWithDot,
-	testGetColumn, 
-	testTranspose.
+
+:- end_tests(takuzu).
